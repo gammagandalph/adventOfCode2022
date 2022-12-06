@@ -6,7 +6,7 @@ namespace adventOfCode2022
   {
     static void Main(string[] args)
     {
-
+      Day03();
     }
 
     static void Day01()
@@ -64,6 +64,15 @@ namespace adventOfCode2022
       }
 
       Console.WriteLine("Total Score with actual Strategy Guide: " + score);
+    }
+
+    static void Day03()
+    {
+      var inventories = ReadFileLines("./input_day03.txt");
+      var checker = new PackingChecker(inventories);
+      Console.WriteLine("Sum of Priorities: " + checker.GetPrioritiesScore());
+      Console.WriteLine("Sum of Badge Priorities: " + checker.GetBadgePriorities());
+
     }
 
     static string[] ReadFileLines(string path)
