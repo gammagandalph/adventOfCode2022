@@ -1,4 +1,5 @@
-﻿using static adventOfCode2022.RockPaperScissors;
+﻿using System.Text;
+using static adventOfCode2022.RockPaperScissors;
 
 namespace adventOfCode2022
 {
@@ -6,7 +7,7 @@ namespace adventOfCode2022
   {
     static void Main(string[] args)
     {
-      Day03();
+      Day05();
     }
 
     static void Day01()
@@ -72,6 +73,74 @@ namespace adventOfCode2022
       var checker = new PackingChecker(inventories);
       Console.WriteLine("Sum of Priorities: " + checker.GetPrioritiesScore());
       Console.WriteLine("Sum of Badge Priorities: " + checker.GetBadgePriorities());
+
+    }
+
+    static void Day04()
+    {
+      var idRanges = new List<Tuple<Tuple<int, int>, Tuple<int, int>>>();
+
+      string[] inputs = ReadFileLines("./input_day04.txt");
+      foreach (var input in inputs)
+      {
+        idRanges.Add(new Tuple<Tuple<int, int>, Tuple<int, int>>(
+          new Tuple<int, int>(Int32.Parse(input.Split(',')[0].Split('-')[0]), Int32.Parse(input.Split(',')[0].Split('-')[1])),
+          new Tuple<int, int>(Int32.Parse(input.Split(',')[1].Split('-')[0]), Int32.Parse(input.Split(',')[1].Split('-')[1]))));
+      }
+
+      var completeOverlap = 0;
+      var someOverlap = 0;
+      var n = 0;
+
+      foreach (var idRange in idRanges)
+      {
+        n++;
+        var start1 = idRange.Item1.Item1;
+        var end1 = idRange.Item1.Item2;
+        var start2 = idRange.Item2.Item1;
+        var end2 = idRange.Item2.Item2;
+
+        if (start1 == start2 && end1 == end2) completeOverlap++;
+        else if (start1 <= start2 && end1 >= end2) completeOverlap++;
+        else if (start2 <= start1 && end2 >= end1) completeOverlap++;
+
+        else if (start1 <= start2 && end1 >= start2) someOverlap++;
+        else if (start2 <= start1 && end2 >= start1) someOverlap++;
+      }
+      Console.WriteLine("N: " + n);
+      Console.WriteLine("Complete Overlap: " + completeOverlap);
+      Console.WriteLine("Any Overlap: " + (completeOverlap + someOverlap));
+    }
+
+    static void Day05()
+    {
+      var ship = new CargoShip(System.IO.File.ReadAllText(@"./input_day05_starting_stack.txt"));
+      var instructions = ReadFileLines(@"./input_day05_instructions.txt").Select(line => new CargoShip.MoveInstruction(line));
+      foreach (var instruction in instructions)
+      {
+        ship.ExecuteMove(instruction);
+      }
+
+      var result = new StringBuilder();
+      foreach (var stack in ship.CargoStacks)
+      {
+        result.Append(stack.Peek());
+      }
+      Console.WriteLine("Expected Result: " + result.ToString());
+
+      var newShip = new CargoShip(System.IO.File.ReadAllText(@"./input_day05_starting_stack.txt"), true);
+
+      var newResult = new StringBuilder();
+      foreach (var instruction in instructions)
+      {
+        newShip.ExecuteMove(instruction);
+      }
+      foreach (var stack in newShip.CargoStacks)
+      {
+        newResult.Append(stack.Peek());
+      }
+      Console.WriteLine("Actual Result: " + newResult.ToString());
+
 
     }
 
